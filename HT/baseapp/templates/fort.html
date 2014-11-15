@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+        .divScroll {
+            overflow:scroll;
+            height:500px;
+            width:800px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <script type="text/javascript" src="/static/angular.min.js"></script>
+    <script type="text/javascript" src="/static/app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  <title>The Bulletin Board</title>
+  </head>
+  <body ng-app = "bulletinapp" >
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">The Bulletin Board</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form"  >
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group" >
+              <input type="password" placeholder="Password" class="form-control" ng-hide="login.bar">
+            </div>
+            <button type="submit" class="btn btn-success" ng-click = "login.toggle()" >Log in</button>
+            <button type="submit" class="btn btn-success" ng-click="adduser.html">Sign up</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+	<br />
+	<br />
+	<br />
+		<div ng-controller="tabs as t" >
+		<ul class="nav nav-tabs" role="tablist" >
+			<li ng-class="{active:t.isSelected(1)}" role="presentation">
+				<a href ng-click="t.setTab(1)">
+					Home
+				</a>
+			</li>
+			<li ng-class="{active:t.isSelected(2)}" role="presentation">
+				<a href ng-click="t.setTab(2)">
+					Art/Music
+				</a>
+			</li>
+			<li ng-class="{active:t.isSelected(3)}" role ng-click="tabs.setTab(3)">
+				<a href ng-click="t.setTab(3)">
+					Tech
+				</a>
+			</li>
+			<li ng-class="{active:t.isSelected(4)}" role="presentation">
+				<a href ng-click="t.setTab(4)">
+					Food
+				</a>
+			</li>
+			<li ng-class="{active:t.isSelected(5)}" role="presentation">
+				<a href ng-click="t.setTab(5)">
+					Park
+				</a>
+			</li>
+
+	
+		</ul>
+	<br />
+	
+	    <div ng-show="t.isSelected(1)">
+			<div ng-controller = "form as form">
+			<button  class="btn btn-success" ng-click = "form.toggle()"> Add Event</button>
+			<br />
+			<br />
+			<form ng-hide="form.on" action = "/addevent/" method = "post">{% csrf_token %}
+			Title:
+			<fieldset class = "form-group">
+			<input type = "text" name="title" placeholder = "Title" title = "Title">
+			</fieldset>
+                        Details:
+			<br>
+			<textarea class="form-control" name= "details" placeholder="Write a simple description of Event..."></textarea>
+				<br />
+			Type of Event:
+			<br>
+			<select name="type">
+			<option value="volvo">Art/Music</option>
+			<option value="saab">Tech</option>
+			<option value="fiat">Food</option>
+			<option value="audi">Park</option>
+			</select>
+			<br />
+			Link:
+			<br />
+                        <fieldset class = "form-group">
+			<input type = "url" name="url" placeholder = "http://www.google.com" title = "link">
+			<br />
+			<button type = "submit" >Submit</button>
+            </form>
+		</div>
+		{%for i in events%}
+			<div class="list-group">
+            <a href = "//{{i.link}}" class="list-group-item" <!--ng-class="{active: ng-mouseover}"-->
+	      <div class="small-image pull-left thumbnail">
+	      <img src="/static/small.jpg" width = "100" height = "100">
+	      </div>
+	      <h4 class ="list-group-item-heading">{{i.title}}</h4>
+              <h6 class="list-group-item-heading">{{i.time}}</h6>
+              <p class="list-group-item-text">{{i.details}}</p>
+	      <p class="list-group-item-text">{{i.link}}</p>
+            </a>
+
+          </div>
+		{% endfor %}
+
+			
+		</div>
+			
+	 
+	    <div  ng-show="t.isSelected(2)">
+		{%for i in art%}
+          <div class="list-group">
+            <a href={{i.link}} class="list-group-item">
+		<div class="small-image pull-left thumbnail">
+	      <img src="/static/small.jpg" width = "100" height = "100">
+	      </div>
+	      <h4 class ="list-group-item-heading">{{i.title}}</h4>
+              <h6 class="list-group-item-heading">{{i.time}}</h6>
+              <p class="list-group-item-text">{{i.details}}</p>
+	      <p class="list-group-item-text">{{i.link}}</p>
+            </a>
+		
+          </div>
+		{% endfor %}
+		</div>	
+
+	    <div ng-show="t.isSelected(3)">
+		{%for i in tech%}
+          <div class="list-group">
+            <a href={{i.link}} class="list-group-item">
+		<div class="small-image pull-left thumbnail">
+	      <img src="/static/small.jpg" width = "100" height = "100">
+	      </div>
+              <h4 class ="list-group-item-heading">{{i.title}}</h4>
+              <h6 class="list-group-item-heading">{{i.time}}</h6>
+              <p class="list-group-item-text">{{i.details}}</p>
+              <p class="list-group-item-text">{{i.link}}</p>
+            </a>
+          </div>
+		{% endfor %}
+		</div>
+
+	    <div ng-show="t.isSelected(4)">
+		{%for i in food%}
+          <div class="list-group">
+            <a href={{i.link}} class="list-group-item">
+		<div class="small-image pull-left thumbnail">
+	      <img src="/static/small.jpg" width = "100" height = "100">
+	      </div>
+              <h4 class ="list-group-item-heading">{{i.title}}</h4>
+              <h6 class="list-group-item-heading">{{i.time}}</h6>
+              <p class="list-group-item-text">{{i.details}}</p>
+              <p class="list-group-item-text">{{i.link}}</p>
+            </a>
+
+          </div>
+                {% endfor %}
+		</div>
+
+	    <div  ng-show="t.isSelected(5)">
+		{%for i in park%}
+          <div class="list-group">
+            <a href="{{i.link}}" class="list-group-item">
+		<div class="small-image pull-left thumbnail">
+	      <img src="/static/small.jpg" width = "100" height = "100">
+	      </div>
+              <h4 class ="list-group-item-heading">{{i.title}}</h4>
+              <h6 class="list-group-item-heading">{{i.time}}</h6>
+              <p class="list-group-item-text">{{i.details}}</p>
+              <p class="list-group-item-text">{{i.link}}</p>
+            </a>
+
+          </div>
+                {% endfor %}
+		</div>
+
+	
+
+	</div>
+
+  </body>
+</html>
